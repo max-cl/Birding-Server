@@ -1,4 +1,6 @@
-import { Types } from 'mongoose';
+import { Types, Document } from 'mongoose';
+
+export type BirdDocument = Bird & Document;
 
 export interface Bird {
     readonly _id?: Types.ObjectId;

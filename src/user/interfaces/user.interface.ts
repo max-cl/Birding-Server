@@ -1,4 +1,6 @@
-import { Types } from 'mongoose';
+import { Types, Document } from 'mongoose';
+
+export type UserDocument = User & Document;
 
 type IData = {
     readonly birdId: Types.ObjectId;

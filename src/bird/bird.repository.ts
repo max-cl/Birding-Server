@@ -1,21 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { Bird } from './interfaces/bird.interface';
-import { BirdDoc } from './interfaces/bird-document.interface';
-import { CreateBirdDTO } from './dto/bird.dto';
+import { BirdDocument } from './interfaces/bird.interface';
+import { EntityRepository } from 'src/database/entity.repository';
 
 @Injectable()
-export class BirdRepository {
-    constructor(
-        @InjectModel('Bird') private readonly birdModel: Model<BirdDoc>,
-    ) {}
-
-    async find(): Promise<Bird[]> {
-        return await this.birdModel.find();
-    }
-
-    async create(createBirdDTO: CreateBirdDTO): Promise<Bird> {
-        return await this.birdModel.create(createBirdDTO);
+export class BirdRepository extends EntityRepository<BirdDocument> {
+    constructor(@InjectModel('Bird') birdModel: Model<BirdDocument>) {
+        super(birdModel);
     }
 }

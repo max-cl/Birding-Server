@@ -8,7 +8,7 @@ export class BirdService {
     constructor(private readonly birdRepository: BirdRepository) {}
 
     async getBirds(): Promise<Bird[]> {
-        return await this.birdRepository.find();
+        return await this.birdRepository.find({});
     }
 
     async createBird(createBirdDTO: CreateBirdDTO): Promise<Bird> {

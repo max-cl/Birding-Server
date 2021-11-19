@@ -1,4 +1,11 @@
-import { Document, Model, FilterQuery, UpdateQuery } from 'mongoose';
+import {
+    Document,
+    Model,
+    FilterQuery,
+    UpdateQuery,
+    UpdateWriteOpResult,
+    UpdateWithAggregationPipeline,
+} from 'mongoose';
 
 export abstract class EntityRepository<T extends Document> {
     constructor(protected readonly entityModel: Model<T>) {}
@@ -24,6 +31,10 @@ export abstract class EntityRepository<T extends Document> {
         return await this.entityModel.create(createEntityData);
     }
 
+    async insertMany(createEntityData: unknown): Promise<T> {
+        return await this.entityModel.insertMany(createEntityData);
+    }
+
     async findOneAndUpdate(
         entityFilterQuery: FilterQuery<T>,
         updateEntityData: UpdateQuery<unknown>,
@@ -34,6 +45,16 @@ export abstract class EntityRepository<T extends Document> {
             {
                 new: true,
             },
+        );
+    }
+
+    async updateOne(
+        entityFilterQuery: FilterQuery<T>,
+        updateEntityData: UpdateWithAggregationPipeline | UpdateQuery<T>,
+    ): Promise<UpdateWriteOpResult> {
+        return await this.entityModel.updateOne(
+            entityFilterQuery,
+            updateEntityData,
         );
     }
 

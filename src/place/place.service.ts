@@ -8,7 +8,7 @@ export class PlaceService {
     constructor(private readonly placeRepository: PlaceRepository) {}
 
     async getPlaces(): Promise<Place[]> {
-        return await this.placeRepository.find();
+        return await this.placeRepository.find({});
     }
 
     async createPlace(createPlaceDTO: CreatePlaceDTO): Promise<Place> {

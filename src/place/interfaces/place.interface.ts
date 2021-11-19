@@ -1,4 +1,6 @@
-import { Types } from 'mongoose';
+import { Types, Document } from 'mongoose';
+
+export type PlaceDocument = Place & Document;
 
 export interface Place {
     readonly _id?: Types.ObjectId;
