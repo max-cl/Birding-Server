@@ -37,7 +37,6 @@ export class UserController {
         const createUserDTO: CreateUserDTO[] = birds.map((bird) => ({
             birdId: bird._id,
             checked: false,
-            // createdAt: new Date(),
         }));
 
         const user = await this.userService.createUser(createUserDTO);

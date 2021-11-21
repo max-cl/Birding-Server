@@ -7,7 +7,6 @@ export class GetUserDTO {
 export class CreateUserDTO {
     readonly birdId: Types.ObjectId;
     readonly checked: Boolean;
-    // readonly createdAt: Date;
 }
 
 export class UpdateUserDTO {
