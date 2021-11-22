@@ -1,43 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Types } from 'mongoose';
 import { BirdController } from './bird.controller';
 import { BirdService } from './bird.service';
 import { CreateBirdDTO } from './dto/bird.dto';
-import { Bird } from './interfaces/bird.interface';
-
-const birdId = new Types.ObjectId();
-
-const mockBird = (
-    _id = birdId,
-    name = 'name',
-    description = 'description',
-    images = ['img1'],
-    thumbnail = 'thumb-img1',
-    checked = true,
-    size = 'medium',
-    coordinates = {},
-    color = ['blue'],
-    information = {},
-    createdAt = new Date('2021-10-05T12:58:52.085Z'),
-): Bird => ({
-    _id,
-    name,
-    description,
-    images,
-    thumbnail,
-    checked,
-    size,
-    coordinates,
-    color,
-    information,
-    createdAt,
-});
-
-const birdArray: Bird[] = [
-    mockBird(),
-    mockBird(birdId, 'name', 'description'),
-    mockBird(birdId, 'name', 'description'),
-];
+import { birdId, birdArray, mockBird } from './__mocks__';
 
 describe('BirdController', () => {
     let controller: BirdController;
@@ -57,7 +22,6 @@ describe('BirdController', () => {
                     provide: BirdService,
                     useValue: {
                         getBirds: jest.fn().mockResolvedValue(birdArray),
-
                         createBird: jest
                             .fn()
                             .mockImplementation(
@@ -86,8 +50,6 @@ describe('BirdController', () => {
 
     describe('getBirds', () => {
         it('should 200 and get an array of birds', async () => {
-            // const birds = await controller.getBirds(res);
-            // expect(birds).toEqual(birdArray);
             const res = mockResponse();
             await controller.getBirds(res);
             expect(res.status).toHaveBeenCalledWith(200);
