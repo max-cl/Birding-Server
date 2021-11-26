@@ -1,97 +1,36 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getModelToken } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
-import { UserDoc } from './interfaces/user-document.interface';
 import { UserService } from './user.service';
-import { User } from './interfaces/user.interface';
+import { UserRepository } from './user.repository';
+import { CreateUserDTO, GetUserDTO } from './dto/user.dto';
+import { userId, mockUser, userRetrieved, mockData } from './__mocks__';
 
-const userId = new Types.ObjectId();
-const birdId = new Types.ObjectId();
-const mockUser = (
-    _id = userId,
-    data: {
-        birdId: Types.ObjectId;
-        checked: true;
-        // createdAt: Date;
-    }[] = [
-        {
-            birdId: birdId,
-            checked: true,
-            // createdAt: new Date('2021-10-05T12:58:52.085Z'),
-        },
-        {
-            birdId: birdId,
-            checked: true,
-            // createdAt: new Date('2021-10-05T12:58:52.085Z'),
-        },
-    ],
-): User => ({
-    _id,
-    data,
-});
-
-const mockUserDoc = (mock?: Partial<User>): Partial<UserDoc> => ({
-    _id: mock?._id || userId,
-    data: [
-        {
-            birdId: mock?.data[0]?.birdId || birdId,
-            checked: mock?.data[0]?.checked || true,
-            // createdAt:
-            //     mock?.data[0]?.createdAt ||
-            //     new Date('2021-10-05T12:58:52.085Z'),
-        },
-        {
-            birdId: mock?.data[0]?.birdId || birdId,
-            checked: mock?.data[0]?.checked || true,
-            // createdAt:
-            //     mock?.data[0]?.createdAt ||
-            //     new Date('2021-10-05T12:58:52.085Z'),
-        },
-    ],
-});
-
-const userRetrieved = mockUser();
-const userDocRetrieved = mockUserDoc();
-
-const dataMock = [
-    {
-        birdId: birdId,
-        checked: true,
-        // createdAt: new Date('2021-10-05T12:58:52.085Z'),
-    },
-    {
-        birdId: birdId,
-        checked: true,
-        // createdAt: new Date('2021-10-05T12:58:52.085Z'),
-    },
-];
-
-describe('UserService', () => {
+describe('UserRepository', () => {
     let service: UserService;
-    let model: Model<UserDoc>;
+    let repository: UserRepository;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
+            controllers: [UserService],
             providers: [
-                UserService,
                 {
-                    provide: getModelToken('User'),
+                    provide: UserRepository,
                     useValue: {
-                        new: jest.fn().mockResolvedValue(mockUser()),
-                        constructor: jest.fn().mockResolvedValue(mockUser()),
-                        find: jest.fn(),
-                        findById: jest.fn(),
-                        update: jest.fn(),
-                        insertMany: jest.fn(),
-                        remove: jest.fn(),
-                        exec: jest.fn(),
+                        findById: jest.fn().mockResolvedValue(mockUser()),
+                        insertMany: jest
+                            .fn()
+                            .mockImplementation((dataMock: CreateUserDTO[]) =>
+                                Promise.resolve({
+                                    _id: userId,
+                                    data: dataMock,
+                                }),
+                            ),
                     },
                 },
             ],
         }).compile();
 
         service = module.get<UserService>(UserService);
-        model = module.get<Model<UserDoc>>(getModelToken('User'));
+        repository = module.get<UserRepository>(UserRepository);
     });
 
     it('should be defined', () => {
@@ -102,27 +41,14 @@ describe('UserService', () => {
         jest.clearAllMocks();
     });
 
-    // In all the spy methods/mock methods we need to make sure to
-    // add in the property function exec and tell it what to return
-    // this way all of our mongo functions can and will be called
-    // properly allowing for us to successfully test them.
-    it('should return an user by id (token)', async () => {
-        jest.spyOn(model, 'findById').mockResolvedValueOnce(
-            userDocRetrieved as any,
-        );
-        const user = await service.getUser(userId as any);
+    it('should get an user by Id', async () => {
+        const user = await repository.findById(userId as unknown as GetUserDTO);
         expect(user).toEqual(userRetrieved);
     });
 
-    it('should insert a new User', async () => {
-        jest.spyOn(model, 'insertMany').mockImplementationOnce(() =>
-            Promise.resolve({
-                _id: userId,
-                data: dataMock,
-            }),
-        );
-
-        const newUser = await service.createUser(dataMock);
+    it('should create a new User', async () => {
+        const createUserDTO: CreateUserDTO[] = mockData();
+        const newUser = await repository.insertMany(createUserDTO);
         expect(newUser).toEqual(mockUser());
     });
 });

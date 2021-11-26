@@ -1,78 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Types } from 'mongoose';
 import { BirdService } from '../bird/bird.service';
 import { CreateUserDTO } from './dto/user.dto';
-import { User } from './interfaces/user.interface';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
-
-const userId = new Types.ObjectId();
-const birdId = new Types.ObjectId();
-// const createdAt = new Date();
-const mockUser = (
-    _id = userId,
-    data: {
-        birdId: Types.ObjectId;
-        checked: boolean;
-        // createdAt: Date;
-    }[] = [
-        {
-            birdId: birdId,
-            checked: false,
-            // createdAt: createdAt,
-        },
-        {
-            birdId: birdId,
-            checked: false,
-            // createdAt: createdAt,
-        },
-    ],
-): User => ({
-    _id,
-    data,
-});
-
-const mockBirdsData = (
-    data: {
-        _id: Types.ObjectId;
-        checked: boolean;
-        // createdAt: Date;
-    }[] = [
-        {
-            _id: birdId,
-            checked: false,
-            // createdAt: createdAt,
-        },
-        {
-            _id: birdId,
-            checked: false,
-            // createdAt: createdAt,
-        },
-    ],
-) => data;
-
-const mockData = (
-    data: {
-        birdId: Types.ObjectId;
-        checked: boolean;
-        // createdAt: Date;
-    }[] = [
-        {
-            birdId: birdId,
-            checked: false,
-            // createdAt: createdAt,
-        },
-        {
-            birdId: birdId,
-            checked: false,
-            // createdAt: createdAt,
-        },
-    ],
-) => data;
-
-const userRetrieved = mockUser();
-const birdsRetrieved = mockBirdsData();
-const dataRetrieved = mockData();
+import {
+    birdsRetrieved,
+    dataRetrieved,
+    mockData,
+    userId,
+    userRetrieved,
+} from './__mocks__';
 
 describe('UserController', () => {
     let controller: UserController;
@@ -95,7 +32,7 @@ describe('UserController', () => {
                         createUser: jest
                             .fn()
                             .mockImplementation(
-                                (createUserDTO: CreateUserDTO) =>
+                                (createUserDTO: CreateUserDTO[]) =>
                                     Promise.resolve([
                                         {
                                             _id: userId,
@@ -129,6 +66,7 @@ describe('UserController', () => {
     describe('getUser', () => {
         it('should 200 and get an User', async () => {
             const res = mockResponse();
+            await service.getUser(userId as any);
             await controller.getUser(res, userId as any);
             expect(res.status).toHaveBeenCalledWith(200);
             expect(res.json).toHaveBeenCalledWith(userRetrieved);
@@ -138,6 +76,7 @@ describe('UserController', () => {
     describe('new User', () => {
         it('should create a new User', async () => {
             const res = mockResponse();
+            await service.createUser(mockData());
             await controller.createUser(res);
             expect(res.status).toHaveBeenCalledWith(201);
             expect(res.json).toHaveBeenCalledWith({
