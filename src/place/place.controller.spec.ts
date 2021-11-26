@@ -4,26 +4,7 @@ import { CreatePlaceDTO } from './dto/place.dto';
 import { Place } from './interfaces/place.interface';
 import { PlaceController } from './place.controller';
 import { PlaceService } from './place.service';
-
-const placeId = new Types.ObjectId();
-
-const mockPlace = (
-    _id = placeId,
-    title = 'title',
-    description = 'description',
-    images = ['img1'],
-    coordinates = {},
-    createdAt = new Date('2021-10-05T12:58:52.085Z'),
-): Place => ({
-    _id,
-    title,
-    description,
-    images,
-    coordinates,
-    createdAt,
-});
-
-const placeArray: Place[] = [mockPlace(), mockPlace(), mockPlace()];
+import { mockPlace, placeArray, placeId } from './__mocks__';
 
 describe('PlaceController', () => {
     let controller: PlaceController;
