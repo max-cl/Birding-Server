@@ -16,7 +16,7 @@ export abstract class EntityRepository<T extends Document> {
     ): Promise<T | null> {
         return await this.entityModel
             .findById(entityFilterQuery, {
-                _id: 0,
+                _id: 1,
                 __v: 0,
                 ...projection,
             })

@@ -40,6 +40,7 @@ export class UserController {
         }));
 
         const user = await this.userService.createUser(createUserDTO);
+
         const idString = user[0]._id.toString();
         return res.status(HttpStatus.CREATED).json({
             message: 'User has been created.',
@@ -53,6 +54,7 @@ export class UserController {
 
     @Put()
     async updateCheckedBird(@Res() res, @Body() updateUserDTO: UpdateUserDTO) {
+        console.log({ 'COntroller Update': updateUserDTO });
         const updated = await this.userService.updateCheckedBird(updateUserDTO);
         if (!updated) throw new NotFoundException('Bird does not exists!');
         return res.status(HttpStatus.OK).json({
