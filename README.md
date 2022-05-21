@@ -1,4 +1,4 @@
-# Canary Islands Birds (Server)
+# Birding MobileApp (Server)
 
 ## Technologies
 
